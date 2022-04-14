@@ -1,45 +1,20 @@
-import { useState } from 'react'
-import logo from './logo.svg'
-import './App.css'
+import React from 'react';
 
-function App() {
-  const [count, setCount] = useState(0)
-
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.tsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
+    <div className="grid grid-cols-10 gap-2">
+      <div className="bg-sky-50 aspect-square">2</div>
+      <div className="bg-sky-100 aspect-square">2</div>
+      <div className="bg-sky-200 aspect-square"></div>
+      <div className="bg-sky-300 aspect-square"></div>
+      <div className="bg-sky-400 aspect-square"></div>
+      <div className="bg-sky-500 aspect-square"></div>
+      <div className="bg-sky-600 aspect-square"></div>
+      <div className="bg-sky-700 aspect-square"></div>
+      <div className="bg-sky-800 aspect-square"></div>
+      <div className="bg-sky-900 aspect-square"></div>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
