@@ -1,19 +1,46 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { Button } from './components/Button';
+import { render } from 'react-dom';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import Home from './pages/Home';
+import Header from './components/Header';
+import Mint from './pages/Mint';
+import Dao from './pages/Dao';
+import Profile from './pages/Profile';
+import NavBar from './components/NavBar';
+import Collections from './pages/Collections';
+import Launchpad from './pages/Launchpad';
+import Apply from './pages/Apply';
 
 const App = () => {
   return (
-    <div className="grid grid-cols-10 gap-2">
-      <div className="bg-sky-50 aspect-square">2</div>
-      <div className="bg-sky-100 aspect-square">2</div>
-      <div className="bg-sky-200 aspect-square"></div>
-      <div className="bg-sky-300 aspect-square"></div>
-      <div className="bg-sky-400 aspect-square"></div>
-      <div className="bg-sky-500 aspect-square"></div>
-      <div className="bg-sky-600 aspect-square"></div>
-      <div className="bg-sky-700 aspect-square"></div>
-      <div className="bg-sky-800 aspect-square"></div>
-      <div className="bg-sky-900 aspect-square"></div>
-    </div>
+    <BrowserRouter>
+      <div>
+        <Header />
+
+        <main>
+          <div className="flex flex-col md:flex-row">
+            <NavBar />
+            <section>
+              <div
+                id="main"
+                className="main-content flex-1  mt-12 md:mt-2 pb-24 md:pb-5 p-4 text-white"
+              >
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/me" element={<Profile />} />
+                  <Route path="/collections" element={<Collections />} />
+                  <Route path="/launchpad" element={<Launchpad />} />
+                  <Route path="/dao" element={<Dao />} />
+                  <Route path="/launchpad/:id" element={<Mint />} />
+                  <Route path="apply" element={<Apply />} />
+                </Routes>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </BrowserRouter>
   );
 };
 
