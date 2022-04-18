@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Header from './components/Header';
-import Mint from './pages/Mint';
 import Profile from './pages/Profile';
 import NavBar from './components/NavBar';
 import Collections from './pages/Collections';
@@ -30,6 +29,9 @@ const App = () => {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/me" element={<Profile />} />
+                <Route path="apply" element={<Apply />} />
+                <Route path="/launchpad" element={<Launchpad />} />
+                <Route path="/launchpad/:id" element={<LaunchpadDetail />} />
                 <Route path="/collections" element={<Collections />} />
                 <Route
                   path="/collections/:collectionId"
@@ -47,10 +49,6 @@ const App = () => {
                   path="/collections/:collectionId/proposals/:proposalId"
                   element={<ProposalDetail />}
                 />
-                <Route path="/launchpad" element={<Launchpad />} />
-                <Route path="/launchpad/:id" element={<LaunchpadDetail />} />
-                <Route path="/launchpad/:id" element={<Mint />} />
-                <Route path="apply" element={<Apply />} />
               </Routes>
             </div>
           </div>

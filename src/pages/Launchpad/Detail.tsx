@@ -1,23 +1,13 @@
-import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { Line } from 'rc-progress';
+
 import { Button } from '../../components/NormalButton';
-import { setAllAccounts, setCurrentAccount } from '../../store/commonSlice';
-import { RootState } from '../../store/rootReducer';
-import { Line, Circle } from 'rc-progress';
+import { useConnectWallet } from '../../hooks/useConnectWallet';
 
 const Detail = () => {
-  const { currentAccount } = useSelector((state: RootState) => state.common);
-  const dispatch = useDispatch();
+  const [currentAccount, connectWallet] = useConnectWallet();
   const navigate = useNavigate();
-
-  const connectWallet = async () => {
-    const allInjected = await web3Enable('AprilDao');
-    const allAccounts = await web3Accounts();
-    dispatch(setAllAccounts(allAccounts));
-    dispatch(setCurrentAccount(allAccounts[0]));
-  };
 
   const mint = () => {
     console.log('mint');

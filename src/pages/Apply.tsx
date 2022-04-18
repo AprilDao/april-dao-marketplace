@@ -1,16 +1,9 @@
-import {
-  web3Accounts,
-  web3Enable,
-  web3FromSource,
-} from '@polkadot/extension-dapp';
-import React, { useEffect } from 'react';
+import { web3FromSource } from '@polkadot/extension-dapp';
 import { api } from '../utils/functions';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store/rootReducer';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from '../components/NormalButton';
-import { setAllAccounts, setCurrentAccount } from '../store/commonSlice';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
+import { useConnectWallet } from '../hooks/useConnectWallet';
 
 type Inputs = {
   collection_name: string;
@@ -20,8 +13,7 @@ type Inputs = {
 };
 
 const Apply = () => {
-  const { currentAccount } = useSelector((state: RootState) => state.common);
-
+  const [currentAccount, connectWallet] = useConnectWallet();
   const txResHandler = ({ status }: any) => {
     toast.success('Applied successfully!');
   };
@@ -43,20 +35,10 @@ const Apply = () => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     apply();
-  };
-
-  const dispatch = useDispatch();
-
-  const connectWallet = async () => {
-    const allInjected = await web3Enable('AprilDao');
-    const allAccounts = await web3Accounts();
-    dispatch(setAllAccounts(allAccounts));
-    dispatch(setCurrentAccount(allAccounts[0]));
   };
 
   return (

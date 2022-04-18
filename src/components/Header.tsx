@@ -1,19 +1,9 @@
-import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store/rootReducer';
-import { setAllAccounts, setCurrentAccount } from '../store/commonSlice';
+import { useConnectWallet } from '../hooks/useConnectWallet';
+import { Button } from './NormalButton';
 
 const Header = () => {
-  const { currentAccount } = useSelector((state: RootState) => state.common);
-  const dispatch = useDispatch();
-
-  const connectWallet = async () => {
-    const allInjected = await web3Enable('AprilDao');
-    const allAccounts = await web3Accounts();
-    dispatch(setAllAccounts(allAccounts));
-    dispatch(setCurrentAccount(allAccounts[0]));
-  };
+  const [currentAccount, connectWallet] = useConnectWallet();
 
   return (
     <header>
@@ -42,12 +32,7 @@ const Header = () => {
                       </Link>
                     )}
                     {!currentAccount && (
-                      <button
-                        className="border border-violet-200 px-4 py-2 rounded"
-                        onClick={connectWallet}
-                      >
-                        Connect wallet
-                      </button>
+                      <Button onClick={connectWallet}>Connect wallet</Button>
                     )}
                   </div>
                 </div>
