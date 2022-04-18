@@ -42,7 +42,7 @@ const App = () => {
                   element={<ProposalList />}
                 />
                 <Route
-                  path="/collections/:collectionId/proposal/create"
+                  path="/collections/:collectionId/proposals/create"
                   element={<ProposalCreate />}
                 />
                 <Route
