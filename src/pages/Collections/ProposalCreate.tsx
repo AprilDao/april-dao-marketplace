@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { api } from '../../utils/functions';
 import { Button } from '../../components/NormalButton';
 import { useConnectWallet } from '../../hooks/useConnectWallet';
+import { submit_proposal } from '../../utils/pallet-interact/extrinsic_call';
 
 type Inputs = {
   collection_name: string;
@@ -15,24 +16,6 @@ type Inputs = {
 const ProposalCreate = () => {
   const [currentAccount, connectWallet] = useConnectWallet();
 
-  const txResHandler = ({ status }: any) => {
-    toast.success('Applied successfully!');
-  };
-
-  const apply = async () => {
-    if (currentAccount) {
-      const injector = await web3FromSource(currentAccount.meta.source);
-      await api.tx.collectionModule.registerCollection().signAndSend(
-        currentAccount?.address,
-        {
-          signer: injector.signer,
-        },
-        txResHandler
-      );
-    } else {
-      alert('please connect wallet first!');
-    }
-  };
   const {
     register,
     handleSubmit,
@@ -40,7 +23,9 @@ const ProposalCreate = () => {
     formState: { errors },
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    apply();
+    if (currentAccount) {
+      submit_proposal(currentAccount, 'collectionId');
+    }
   };
 
   return (
@@ -51,7 +36,7 @@ const ProposalCreate = () => {
             className="block uppercase tracking-wide text-gray-200 text-xs font-bold mb-2"
             htmlFor="grid-first-name"
           >
-            Collection name
+            Proposal title
           </label>
           <input
             className="appearance-none block w-full text-gray-900 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
@@ -80,7 +65,7 @@ const ProposalCreate = () => {
             className="block uppercase tracking-wide text-gray-200 text-xs font-bold mb-2"
             htmlFor="numberOfItems"
           >
-            Number of items
+            Withdraw (%)
           </label>
           <input
             defaultValue=""
@@ -95,7 +80,7 @@ const ProposalCreate = () => {
             className="block uppercase tracking-wide text-gray-200 text-xs font-bold mb-2"
             htmlFor="mintFee"
           >
-            Mint fee
+            Withdraw to address
           </label>
           <input
             defaultValue=""
@@ -107,7 +92,7 @@ const ProposalCreate = () => {
         </div>
         <div className="w-2/3 px-3">
           {currentAccount && (
-            <Button onClick={handleSubmit(onSubmit)}>Apply</Button>
+            <Button onClick={handleSubmit(onSubmit)}>Create proposals</Button>
           )}
           {!currentAccount && (
             <Button onClick={connectWallet}>Connect wallet</Button>
