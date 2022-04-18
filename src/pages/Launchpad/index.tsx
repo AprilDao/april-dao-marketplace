@@ -7,18 +7,14 @@ const index = () => {
     <div>
       <h1>Upcoming</h1>
       <div className="collection-list flex">
-        {upcomingLaunches.map(({ id, title, img }, index) => {
+        {upcomingLaunches.map(({ id, title, img, mintInfor }, index) => {
           return (
             <CollectionItem
               key={index}
               link={`/launchpad/${id}`}
               title={title}
               img={img}
-              mintInfo={{
-                time: '2022/23/22',
-                numberOfItems: 1555,
-                mintfee: 1.5,
-              }}
+              mintInfo={mintInfor}
             />
           );
         })}
