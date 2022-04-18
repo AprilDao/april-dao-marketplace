@@ -1,40 +1,20 @@
-import React, { useState } from 'react';
-import {
-  web3Accounts,
-  web3Enable,
-  web3FromAddress,
-  web3ListRpcProviders,
-  web3UseRpcProvider,
-} from '@polkadot/extension-dapp';
+import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../store/rootReducer';
+import { setAllAccounts, setCurrentAccount } from '../store/commonSlice';
 
 const Header = () => {
-  const menus2 = [
-    {
-      url: '/',
-      title: 'Home',
-    },
-    {
-      url: '/register',
-      title: 'Register Project',
-    },
-    {
-      url: '/dao',
-      title: 'April DAO',
-    },
-    // {
-    //   url: '/about',
-    //   title: 'About',
-    // },
-  ];
-
-  const [accounts, setAccounts] = useState<string[]>([]);
+  const { currentAccount } = useSelector((state: RootState) => state.common);
+  const dispatch = useDispatch();
 
   const connectWallet = async () => {
     const allInjected = await web3Enable('AprilDao');
     const allAccounts = await web3Accounts();
-    setAccounts(allAccounts.map((item) => item.address));
+    dispatch(setAllAccounts(allAccounts));
+    dispatch(setCurrentAccount(allAccounts[0]));
   };
+
   return (
     <header>
       <nav
@@ -51,52 +31,24 @@ const Header = () => {
           </div>
 
           <div className="flex flex-1 md:w-1/3 justify-center md:justify-start text-white px-2"></div>
-
           <div className="flex w-full pt-2 content-center justify-between md:w-1/3 md:justify-end">
             <ul className="list-reset flex justify-between flex-1 md:flex-none items-center">
               <li className="flex-1 md:flex-none md:mr-3">
-                <div className="relative inline-block text-white">
-                  {accounts.length > 0 && (
-                    <Link to="/me">{accounts[0].substring(0, 10)}</Link>
-                  )}
-
-                  {accounts.length === 0 && (
-                    <button
-                      className="border border-violet-200 px-4 py-2 rounded"
-                      onClick={connectWallet}
-                    >
-                      Connect wallet
-                    </button>
-                  )}
-                  <div
-                    id="myDropdown"
-                    className="dropdownlist absolute bg-gray-800 text-white right-0 mt-3 p-3 overflow-auto z-30 invisible"
-                  >
-                    <input
-                      type="text"
-                      className="drop-search p-2 text-gray-600"
-                      placeholder="Search.."
-                      id="myInput"
-                    />
-                    <a
-                      href="#"
-                      className="p-2 hover:bg-gray-800 text-white text-sm no-underline hover:no-underline block"
-                    >
-                      <i className="fa fa-user fa-fw"></i> Profile
-                    </a>
-                    <a
-                      href="#"
-                      className="p-2 hover:bg-gray-800 text-white text-sm no-underline hover:no-underline block"
-                    >
-                      <i className="fa fa-cog fa-fw"></i> Settings
-                    </a>
-                    <div className="border border-gray-800"></div>
-                    <a
-                      href="#"
-                      className="p-2 hover:bg-gray-800 text-white text-sm no-underline hover:no-underline block"
-                    >
-                      <i className="fas fa-sign-out-alt fa-fw"></i> Log Out
-                    </a>
+                <div className="relative  inline-block text-white">
+                  <div className="flex">
+                    {currentAccount && (
+                      <Link to="/me">
+                        Hi, {currentAccount.address.substring(0, 10)}
+                      </Link>
+                    )}
+                    {!currentAccount && (
+                      <button
+                        className="border border-violet-200 px-4 py-2 rounded"
+                        onClick={connectWallet}
+                      >
+                        Connect wallet
+                      </button>
+                    )}
                   </div>
                 </div>
               </li>

@@ -1,19 +1,36 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import NavBar from '../components/NavBar';
+import CollectionItem from '../components/CollectionItem';
 import { upcomingLaunches } from '../utils/constant';
 
 const Home = () => {
   return (
     <div>
-      <div>
+      <section>
         <h2>Upcoming Launches</h2>
+
+        <div className="upcoming-lauches flex">
+          {upcomingLaunches.map(({ id, title, img }, index) => {
+            return (
+              <CollectionItem
+                key={index}
+                link={`/launchpad/${id}`}
+                title={title}
+                img={img}
+              />
+            );
+          })}
+        </div>
+      </section>
+
+      <section>
+        <h2>Popular collections</h2>
 
         <div className="upcoming-lauches flex">
           {upcomingLaunches.map((project, index) => {
             return (
               <div key={index} className="mr-2">
-                <Link to={`/mint/${project.id}`}>
+                <Link to={`/collections/${project.id}`}>
                   <img className="rounded-md" src={project.img} alt="" />
 
                   <p>{project.title}</p>
@@ -22,7 +39,7 @@ const Home = () => {
             );
           })}
         </div>
-      </div>
+      </section>
     </div>
   );
 };
