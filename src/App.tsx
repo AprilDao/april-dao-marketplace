@@ -31,7 +31,10 @@ const App = () => {
                 <Route path="/me" element={<Profile />} />
                 <Route path="apply" element={<Apply />} />
                 <Route path="/launchpad" element={<Launchpad />} />
-                <Route path="/launchpad/:id" element={<LaunchpadDetail />} />
+                <Route
+                  path="/launchpad/:collectionId"
+                  element={<LaunchpadDetail />}
+                />
                 <Route path="/collections" element={<Collections />} />
                 <Route
                   path="/collections/:collectionId"
