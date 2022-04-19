@@ -8,17 +8,30 @@ import ExtenalLink from '../../components/ExtenalLink';
 import { CountdownTimer } from '../../components/CountdownTimer';
 import { useCountdown } from '../../hooks/useCountDown';
 import { RootState } from '../../store/rootReducer';
+import { useEffect, useState } from 'react';
+import { getCollectionByHash } from '../../utils/pallet-interact/chain_state';
+import { Collection } from '../../models/Collection';
 
 const Detail = () => {
   const [currentAccount, connectWallet] = useConnectWallet();
   let { collectionId } = useParams();
-  const upcomming = useSelector(
-    (root: RootState) => root.collection.upcommingCollections
-  ).find((c) => c.id.toString() === collectionId);
-  const [days, hours, minutes, seconds] = useCountdown(
-    upcomming?.mintInfor.time || '2022/12/31'
-  );
   const navigate = useNavigate();
+
+  const [upcoming, setUpcoming] = useState<any>();
+
+  // const [days, hours, minutes, seconds] = useCountdown(
+  //   upcomming?.mintInfor.time || '2022/12/31'
+  // );
+
+  useEffect(() => {
+    const init = async () => {
+      if (collectionId) {
+        const collection = await getCollectionByHash(collectionId);
+        setUpcoming(collection.toHuman());
+      }
+    };
+    init();
+  }, [collectionId]);
 
   const mint = () => {
     console.log('mint');
@@ -32,8 +45,8 @@ const Detail = () => {
     <div>
       <div className="flex">
         <div>
-          <h1>{upcomming?.title}</h1>
-          <div>{upcomming?.mintInfor.mintFee} ◎</div>
+          <h1>{upcoming?.name}</h1>
+          {/* <div>{upcoming?.mintInfor.mintFee} ◎</div> */}
           <div className="flex gap-1 mt-3">
             <a href="#" className="flex">
               <ExtenalLink />
@@ -44,7 +57,7 @@ const Detail = () => {
               <span>Discord</span>
             </a>
           </div>
-          <p className="mt-6">{upcomming?.description}</p>
+          <p className="mt-6">{upcoming?.description}</p>
           <br />
         </div>
         <div>
@@ -57,7 +70,7 @@ const Detail = () => {
           <div>
             <div className="flex justify-between">
               <div>Total minted</div>
-              <div>0% (400/{upcomming?.mintInfor.numberOfItems})</div>
+              {/* <div>0% (400/{upcoming?.mintInfor.numberOfItems})</div> */}
             </div>
             <Line
               percent={(400 / 1555) * 100}
@@ -65,7 +78,7 @@ const Detail = () => {
               strokeColor="#e93a88"
             />
           </div>
-          <div className="mt-2">
+          {/* <div className="mt-2">
             {days + hours + minutes + seconds > 0 && (
               <CountdownTimer
                 days={days}
@@ -93,7 +106,7 @@ const Detail = () => {
                 </div>
               </>
             )}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

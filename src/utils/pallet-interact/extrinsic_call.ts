@@ -7,14 +7,16 @@ const txResHandler = ({ status }: any) => {
   toast.success('Applied successfully!');
 };
 
-export const submit_project = async (
+export const registerCollection = async (
   currentAccount: InjectedAccountWithMeta,
   projectName: string,
-  description: string
+  description: string,
+  numberOfItems: number,
+  mintFee: number
 ) => {
   const injector = await web3FromSource(currentAccount.meta.source);
   await api.tx.collectionModule
-    .submit_project(projectName, description)
+    .registerCollection(projectName, description, numberOfItems, mintFee)
     .signAndSend(
       currentAccount?.address,
       {

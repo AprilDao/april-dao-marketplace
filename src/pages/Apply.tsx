@@ -1,9 +1,8 @@
-import { web3FromSource } from '@polkadot/extension-dapp';
-import { api } from '../utils/functions';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from '../components/NormalButton';
-import { toast } from 'react-toastify';
 import { useConnectWallet } from '../hooks/useConnectWallet';
+import { getAllCollections } from '../utils/pallet-interact/chain_state';
+import { registerCollection } from '../utils/pallet-interact/extrinsic_call';
 
 type Inputs = {
   collection_name: string;
@@ -14,31 +13,39 @@ type Inputs = {
 
 const Apply = () => {
   const [currentAccount, connectWallet] = useConnectWallet();
-  const txResHandler = ({ status }: any) => {
-    toast.success('Applied successfully!');
-  };
+  // const txResHandler = ({ status }: any) => {
+  //   toast.success('Applied successfully!');
+  // };
 
-  const apply = async () => {
-    if (currentAccount) {
-      const injector = await web3FromSource(currentAccount.meta.source);
-      await api.tx.collectionModule.registerCollection().signAndSend(
-        currentAccount?.address,
-        {
-          signer: injector.signer,
-        },
-        txResHandler
-      );
-    } else {
-      alert('please connect wallet first!');
-    }
-  };
+  // const apply = async () => {
+  //   if (currentAccount) {
+  //     const injector = await web3FromSource(currentAccount.meta.source);
+  //     await api.tx.collectionModule.registerCollection().signAndSend(
+  //       currentAccount?.address,
+  //       {
+  //         signer: injector.signer,
+  //       },
+  //       txResHandler
+  //     );
+  //   } else {
+  //     alert('please connect wallet first!');
+  //   }
+  // };
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    apply();
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    if (currentAccount) {
+      await registerCollection(
+        currentAccount,
+        data.collection_name,
+        data.description,
+        data.numberOfItems,
+        data.mintFee
+      );
+    }
   };
 
   return (
