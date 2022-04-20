@@ -9,3 +9,8 @@ export const getCollectionByHash = async (hash: string) => {
   const now = await api.query.collectionModule.collections(hash);
   return now;
 };
+
+export const getNFTByCollectionId = async (collectionId: string) => {
+  const now = await api.query.collectionModule.nfTs(collectionId);
+  return now;
+};

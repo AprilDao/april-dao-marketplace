@@ -10,6 +10,7 @@ import { useCountdown } from '../../hooks/useCountDown';
 import { RootState } from '../../store/rootReducer';
 import { useEffect, useState } from 'react';
 import { getCollectionByHash } from '../../utils/pallet-interact/chain_state';
+import { mint } from '../../utils/pallet-interact/extrinsic_call';
 import { Collection } from '../../models/Collection';
 
 const Detail = () => {
@@ -19,9 +20,9 @@ const Detail = () => {
 
   const [upcoming, setUpcoming] = useState<any>();
 
-  // const [days, hours, minutes, seconds] = useCountdown(
-  //   upcomming?.mintInfor.time || '2022/12/31'
-  // );
+  const [days, hours, minutes, seconds] = useCountdown(
+    upcoming?.mintInfor ? upcoming?.mintInfor.time : '2021/12/31'
+  );
 
   useEffect(() => {
     const init = async () => {
@@ -33,12 +34,14 @@ const Detail = () => {
     init();
   }, [collectionId]);
 
-  const mint = () => {
-    console.log('mint');
+  const mintNFT = () => {
+    if (currentAccount && collectionId) {
+      mint(currentAccount, collectionId);
+    }
   };
 
   const visit = () => {
-    navigate('/collections/3');
+    navigate(`/collections/${collectionId}`);
   };
 
   return (
@@ -78,7 +81,7 @@ const Detail = () => {
               strokeColor="#e93a88"
             />
           </div>
-          {/* <div className="mt-2">
+          <div className="mt-2">
             {days + hours + minutes + seconds > 0 && (
               <CountdownTimer
                 days={days}
@@ -90,7 +93,7 @@ const Detail = () => {
             {days + hours + minutes + seconds <= 0 && (
               <>
                 {currentAccount && (
-                  <Button className="w-full" onClick={mint}>
+                  <Button className="w-full" onClick={mintNFT}>
                     Mint
                   </Button>
                 )}
@@ -106,7 +109,7 @@ const Detail = () => {
                 </div>
               </>
             )}
-          </div> */}
+          </div>
         </div>
       </div>
     </div>
