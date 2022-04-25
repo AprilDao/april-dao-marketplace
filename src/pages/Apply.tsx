@@ -13,24 +13,6 @@ type Inputs = {
 
 const Apply = () => {
   const [currentAccount, connectWallet] = useConnectWallet();
-  // const txResHandler = ({ status }: any) => {
-  //   toast.success('Applied successfully!');
-  // };
-
-  // const apply = async () => {
-  //   if (currentAccount) {
-  //     const injector = await web3FromSource(currentAccount.meta.source);
-  //     await api.tx.collectionModule.registerCollection().signAndSend(
-  //       currentAccount?.address,
-  //       {
-  //         signer: injector.signer,
-  //       },
-  //       txResHandler
-  //     );
-  //   } else {
-  //     alert('please connect wallet first!');
-  //   }
-  // };
   const {
     register,
     handleSubmit,

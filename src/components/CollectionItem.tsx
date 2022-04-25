@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useCountdown } from '../hooks/useCountDown';
-import { CountdownTimer } from './CountdownTimer';
+import MintTime from './MintTime';
 
 interface CollectionItemProps {
   link: string;
@@ -11,7 +10,7 @@ interface CollectionItemProps {
 }
 
 interface MintInfo {
-  time: string;
+  time?: string;
   numberOfItems: number;
   mintFee: number;
 }
@@ -23,11 +22,9 @@ const CollectionItem: React.FC<CollectionItemProps> = ({
   mintInfo,
 }) => {
   const renderMintInfor = (mint: MintInfo) => {
-    const [days, hours, minutes, seconds] = useCountdown(mint.time);
-
     return (
       <div>
-        <div className="text-pink-400">{`${days}d ${hours}h ${minutes}m ${seconds}s`}</div>
+        {mint.time && <MintTime time={mint.time} />}
         <div>
           <div>{mint.numberOfItems}</div>
           <div>{mint.mintFee}</div>

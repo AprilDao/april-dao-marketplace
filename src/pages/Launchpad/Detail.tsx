@@ -7,11 +7,11 @@ import { useConnectWallet } from '../../hooks/useConnectWallet';
 import ExtenalLink from '../../components/ExtenalLink';
 import { CountdownTimer } from '../../components/CountdownTimer';
 import { useCountdown } from '../../hooks/useCountDown';
-import { RootState } from '../../store/rootReducer';
 import { useEffect, useState } from 'react';
 import { getCollectionByHash } from '../../utils/pallet-interact/chain_state';
 import { mint } from '../../utils/pallet-interact/extrinsic_call';
-import { Collection } from '../../models/Collection';
+import { convertNumber } from '../../utils/helper';
+import MintTime from '../../components/MintTime';
 
 const Detail = () => {
   const [currentAccount, connectWallet] = useConnectWallet();
@@ -20,9 +20,9 @@ const Detail = () => {
 
   const [upcoming, setUpcoming] = useState<any>();
 
-  const [days, hours, minutes, seconds] = useCountdown(
-    upcoming?.mintInfor ? upcoming?.mintInfor.time : '2021/12/31'
-  );
+  // const [days, hours, minutes, seconds] = useCountdown(
+  //   upcoming?.mintInfor ? upcoming?.mintInfor.time : '2021/12/31'
+  // );
 
   useEffect(() => {
     const init = async () => {
@@ -49,7 +49,7 @@ const Detail = () => {
       <div className="flex">
         <div>
           <h1>{upcoming?.name}</h1>
-          {/* <div>{upcoming?.mintInfor.mintFee} ◎</div> */}
+          <div>{upcoming?.mintFee} ◎</div>
           <div className="flex gap-1 mt-3">
             <a href="#" className="flex">
               <ExtenalLink />
@@ -73,24 +73,37 @@ const Detail = () => {
           <div>
             <div className="flex justify-between">
               <div>Total minted</div>
-              {/* <div>0% (400/{upcoming?.mintInfor.numberOfItems})</div> */}
+              {upcoming && upcoming.numberOfItems && upcoming.numberOfMinted && (
+                <div>
+                  {(convertNumber(upcoming.numberOfMinted) /
+                    convertNumber(upcoming.numberOfItems)) *
+                    100}
+                  % ({convertNumber(upcoming.numberOfMinted)}/
+                  {convertNumber(upcoming.numberOfItems)})
+                </div>
+              )}
             </div>
-            <Line
-              percent={(400 / 1555) * 100}
-              strokeWidth={4}
-              strokeColor="#e93a88"
-            />
-          </div>
-          <div className="mt-2">
-            {days + hours + minutes + seconds > 0 && (
-              <CountdownTimer
-                days={days}
-                hours={hours}
-                minutes={minutes}
-                seconds={seconds}
+            {upcoming && (
+              <Line
+                percent={
+                  (Number(upcoming.numberOfMinted) /
+                    Number(upcoming.numberOfItems)) *
+                  100
+                }
+                strokeWidth={4}
+                strokeColor="#e93a88"
               />
             )}
-            {days + hours + minutes + seconds <= 0 && (
+          </div>
+          {upcoming && (
+            <MintTime
+              time={new Date(
+                convertNumber(upcoming.startDate) * 1000
+              ).toString()}
+            />
+          )}
+          {upcoming &&
+            new Date(convertNumber(upcoming.startDate) * 1000) < new Date() && (
               <>
                 {currentAccount && (
                   <Button className="w-full" onClick={mintNFT}>
@@ -102,6 +115,11 @@ const Detail = () => {
                     Connect wallet
                   </Button>
                 )}
+              </>
+            )}
+          {upcoming &&
+            new Date(convertNumber(upcoming.endDate) * 1000) < new Date() && (
+              <>
                 <div className="mt-2">
                   <Button className="w-full" onClick={visit}>
                     Visit collection
@@ -109,7 +127,6 @@ const Detail = () => {
                 </div>
               </>
             )}
-          </div>
         </div>
       </div>
     </div>

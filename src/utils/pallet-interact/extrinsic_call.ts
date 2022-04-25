@@ -26,18 +26,24 @@ export const registerCollection = async (
     );
 };
 
-export const approve_launchpad = async (
+export const approve_collection = async (
   currentAccount: InjectedAccountWithMeta,
-  collectionId: string
+  collectionId: string,
+  startDate: number,
+  endDate: number
 ) => {
+  console.log(startDate);
+  console.log(endDate);
   const injector = await web3FromSource(currentAccount.meta.source);
-  await api.tx.collectionModule.approve_launchpad(collectionId).signAndSend(
-    currentAccount?.address,
-    {
-      signer: injector.signer,
-    },
-    txResHandler
-  );
+  await api.tx.collectionModule
+    .approveCollection(collectionId, startDate, endDate)
+    .signAndSend(
+      currentAccount?.address,
+      {
+        signer: injector.signer,
+      },
+      txResHandler
+    );
 };
 
 export const mint = async (
@@ -90,6 +96,36 @@ export const cast_vote = async (
 ) => {
   const injector = await web3FromSource(currentAccount.meta.source);
   await api.tx.collectionModule.cast_vote(collectionId).signAndSend(
+    currentAccount?.address,
+    {
+      signer: injector.signer,
+    },
+    txResHandler
+  );
+};
+
+export const yay = async (
+  currentAccount: InjectedAccountWithMeta,
+  collectionId: string,
+  proposalId: string
+) => {
+  const injector = await web3FromSource(currentAccount.meta.source);
+  await api.tx.collectionModule.yay(collectionId, proposalId).signAndSend(
+    currentAccount?.address,
+    {
+      signer: injector.signer,
+    },
+    txResHandler
+  );
+};
+
+export const nay = async (
+  currentAccount: InjectedAccountWithMeta,
+  collectionId: string,
+  proposalId: string
+) => {
+  const injector = await web3FromSource(currentAccount.meta.source);
+  await api.tx.collectionModule.nay(collectionId, proposalId).signAndSend(
     currentAccount?.address,
     {
       signer: injector.signer,

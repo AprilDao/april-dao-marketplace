@@ -13,6 +13,8 @@ import ProposalList from './pages/Collections/ProposalList';
 import ProposalCreate from './pages/Collections/ProposalCreate';
 import ProposalDetail from './pages/Collections/ProposalDetail';
 import { ToastContainer } from 'react-toastify';
+import ApplyAdmin from './pages/ApplyAdmin';
+import Admin from './pages/Launchpad/Admin';
 
 const App = () => {
   return (
@@ -28,8 +30,13 @@ const App = () => {
             >
               <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/me" element={<Profile />} />
+                <Route path="me" element={<Profile />} />
                 <Route path="apply" element={<Apply />} />
+                <Route path="admin/apply" element={<Admin />} />
+                <Route
+                  path="admin/apply/:collectionId"
+                  element={<ApplyAdmin />}
+                />
                 <Route path="/launchpad" element={<Launchpad />} />
                 <Route
                   path="/launchpad/:collectionId"

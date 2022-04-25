@@ -19,6 +19,10 @@ const NavBar = () => {
       url: '/apply',
       title: 'Apply for launchpad',
     },
+    {
+      url: 'admin/apply',
+      title: 'Review collection',
+    },
   ];
 
   return (

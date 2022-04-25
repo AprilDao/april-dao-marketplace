@@ -11,6 +11,11 @@ export const getCollectionByHash = async (hash: string) => {
 };
 
 export const getNFTByCollectionId = async (collectionId: string) => {
-  const now = await api.query.collectionModule.nfTs(collectionId);
+  const now = await api.query.collectionModule.nfTs(collectionId, 0);
+  return now;
+};
+
+export const getProposalsByCollectionId = async (collectionId: string) => {
+  const now = await api.query.collectionModule.proposals.entries(collectionId);
   return now;
 };
