@@ -1,12 +1,9 @@
-import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Line } from 'rc-progress';
 
 import { Button } from '../../components/NormalButton';
 import { useConnectWallet } from '../../hooks/useConnectWallet';
 import ExtenalLink from '../../components/ExtenalLink';
-import { CountdownTimer } from '../../components/CountdownTimer';
-import { useCountdown } from '../../hooks/useCountDown';
 import { useEffect, useState } from 'react';
 import { getCollectionByHash } from '../../utils/pallet-interact/chain_state';
 import { mint } from '../../utils/pallet-interact/extrinsic_call';
@@ -19,10 +16,6 @@ const Detail = () => {
   const navigate = useNavigate();
 
   const [upcoming, setUpcoming] = useState<any>();
-
-  // const [days, hours, minutes, seconds] = useCountdown(
-  //   upcoming?.mintInfor ? upcoming?.mintInfor.time : '2021/12/31'
-  // );
 
   useEffect(() => {
     const init = async () => {
@@ -47,9 +40,9 @@ const Detail = () => {
   return (
     <div>
       <div className="flex">
-        <div>
+        <div className="w-1/2">
           <h1>{upcoming?.name}</h1>
-          <div>{upcoming?.mintFee} ◎</div>
+          <div>PRICE : {upcoming?.mintFee} ◎</div>
           <div className="flex gap-1 mt-3">
             <a href="#" className="flex">
               <ExtenalLink />
@@ -63,7 +56,7 @@ const Detail = () => {
           <p className="mt-6">{upcoming?.description}</p>
           <br />
         </div>
-        <div>
+        <div className="w-1/2">
           <img
             src="https://bafybeihycbe5abcf7nxugeb3kddghnlr7wke2vlow2l3jurw7b4dgudw6i.ipfs.nftstorage.link/"
             alt="Hidden Boyz"
@@ -75,9 +68,10 @@ const Detail = () => {
               <div>Total minted</div>
               {upcoming && upcoming.numberOfItems && upcoming.numberOfMinted && (
                 <div>
-                  {(convertNumber(upcoming.numberOfMinted) /
-                    convertNumber(upcoming.numberOfItems)) *
-                    100}
+                  {Math.floor(
+                    convertNumber(upcoming.numberOfMinted) /
+                      convertNumber(upcoming.numberOfItems)
+                  ) * 100}
                   % ({convertNumber(upcoming.numberOfMinted)}/
                   {convertNumber(upcoming.numberOfItems)})
                 </div>
@@ -86,8 +80,8 @@ const Detail = () => {
             {upcoming && (
               <Line
                 percent={
-                  (Number(upcoming.numberOfMinted) /
-                    Number(upcoming.numberOfItems)) *
+                  (convertNumber(upcoming.numberOfMinted) /
+                    convertNumber(upcoming.numberOfItems)) *
                   100
                 }
                 strokeWidth={4}
@@ -103,7 +97,10 @@ const Detail = () => {
             />
           )}
           {upcoming &&
-            new Date(convertNumber(upcoming.startDate) * 1000) < new Date() && (
+            convertNumber(upcoming.numberOfMinted) <
+              convertNumber(upcoming.numberOfItems) &&
+            new Date(convertNumber(upcoming.startDate) * 1000) <= new Date() &&
+            new Date(convertNumber(upcoming.endDate) * 1000) >= new Date() && (
               <>
                 {currentAccount && (
                   <Button className="w-full" onClick={mintNFT}>

@@ -22,7 +22,7 @@ const Home = () => {
   return (
     <div>
       <section>
-        <h2>Upcoming Launches</h2>
+        <h2 className="text-white">Upcoming Launches</h2>
         <div className="upcoming-lauches flex">
           {collections
             .filter((item) => item.projectStatus === 'Approved')
@@ -45,7 +45,7 @@ const Home = () => {
       </section>
 
       <section>
-        <h2>Popular collections</h2>
+        <h2 className="text-white">Popular collections</h2>
 
         <div className="upcoming-lauches flex">
           {collections

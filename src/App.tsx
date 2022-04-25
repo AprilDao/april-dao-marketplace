@@ -19,7 +19,7 @@ import Admin from './pages/Launchpad/Admin';
 const App = () => {
   return (
     <BrowserRouter>
-      <div>
+      <div className="text-white">
         <Header />
         <main>
           <div className="flex flex-col md:flex-row">

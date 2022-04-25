@@ -1,30 +1,54 @@
+import { Button } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { getProposalsByCollectionId } from '../../utils/pallet-interact/chain_state';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useConnectWallet } from '../../hooks/useConnectWallet';
+import {
+  getCollectionByHash,
+  getProposalsByCollectionId,
+} from '../../utils/pallet-interact/chain_state';
 
 const ProposalList = () => {
+  const [currentAccount, connectWallet] = useConnectWallet();
   const [proposals, setProposals] = useState<any[]>([1, 2, 3]);
+  const [currentCollection, setCurrentCollection] = useState<any>();
+  const navigate = useNavigate();
   let { collectionId } = useParams();
+
   useEffect(() => {
     const init = async () => {
       if (collectionId) {
-        const all = await getProposalsByCollectionId(collectionId);
-        setProposals(
-          all.map(([_, value]) => {
-            return value.toHuman();
-          })
-        );
+        // const all = await getProposalsByCollectionId(collectionId);
+        // setProposals(
+        //   all.map(([_, value]) => {
+        //     return value.toHuman();
+        //   })
+        // );
+
+        const collection = await getCollectionByHash(collectionId);
+        setCurrentCollection(collection.toHuman());
       }
     };
 
-    // init();
-  }, []);
+    init();
+  }, [collectionId]);
+
+  const onCreateProposal = () => {
+    navigate(`/collections/${collectionId}/proposals/create`);
+  };
+
   return (
     <div className="container">
+      {currentCollection &&
+        currentCollection.owner === currentAccount?.address && (
+          <Button onClick={onCreateProposal}>Create new proposal</Button>
+        )}
+      {!currentAccount && (
+        <Button onClick={connectWallet}>Connect wallet</Button>
+      )}
       <ul>
-        {proposals.map((item) => {
+        {proposals.map((item, index) => {
           return (
-            <li>
+            <li key={index}>
               <Link to={`/collections/${collectionId}/proposals/${item}`}>
                 <div className="flex justify-between">
                   <span>{item.owner}</span>
@@ -33,8 +57,8 @@ const ProposalList = () => {
                   </span>
                 </div>
                 <h1 className="text-white text-xl">
-                  Kanpai Part 2: SushiMaker Treasury Payout Ratio
-                  [Implementation]
+                  {`#${item.id} Kanpai Part 2: SushiMaker Treasury Payout Ratio
+                  [Implementation]`}
                 </h1>
                 <p className="text-yellow-200">
                   This proposal’s expectation is to produce an implementation.
