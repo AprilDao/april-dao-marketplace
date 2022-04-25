@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { api } from '../functions';
 
 const txResHandler = ({ status }: any) => {
+  console.log(status);
   toast.success('Applied successfully!');
 };
 
@@ -26,18 +27,40 @@ export const registerCollection = async (
     );
 };
 
-export const approve_launchpad = async (
+export const approve_collection = async (
+  currentAccount: InjectedAccountWithMeta,
+  collectionId: string,
+  startDate: number,
+  endDate: number
+) => {
+  console.log(startDate);
+  console.log(endDate);
+  const injector = await web3FromSource(currentAccount.meta.source);
+  await api.tx.collectionModule
+    .approveCollection(collectionId, startDate, endDate)
+    .signAndSend(
+      currentAccount?.address,
+      {
+        signer: injector.signer,
+      },
+      txResHandler
+    );
+};
+
+export const bindAssetToNft = async (
   currentAccount: InjectedAccountWithMeta,
   collectionId: string
 ) => {
   const injector = await web3FromSource(currentAccount.meta.source);
-  await api.tx.collectionModule.approve_launchpad(collectionId).signAndSend(
-    currentAccount?.address,
-    {
-      signer: injector.signer,
-    },
-    txResHandler
-  );
+  await api.tx.votingModule
+    .bindAssetToNft(collectionId, collectionId)
+    .signAndSend(
+      currentAccount?.address,
+      {
+        signer: injector.signer,
+      },
+      txResHandler
+    );
 };
 
 export const mint = async (
@@ -54,18 +77,32 @@ export const mint = async (
   );
 };
 
-export const submit_proposal = async (
+export const createProposal = async (
   currentAccount: InjectedAccountWithMeta,
-  collectionId: string
+  collectionId: string,
+  title: string,
+  description: string,
+  withdrawAmount: number,
+  withdrawAddress: string,
+  expiredAt: number
 ) => {
   const injector = await web3FromSource(currentAccount.meta.source);
-  await api.tx.collectionModule.submit_proposal(collectionId).signAndSend(
-    currentAccount?.address,
-    {
-      signer: injector.signer,
-    },
-    txResHandler
-  );
+  await api.tx.votingModule
+    .createProposal(
+      collectionId,
+      collectionId,
+      withdrawAmount,
+      withdrawAddress,
+      description,
+      expiredAt
+    )
+    .signAndSend(
+      currentAccount?.address,
+      {
+        signer: injector.signer,
+      },
+      txResHandler
+    );
 };
 
 export const submit_refund_proposal = async (
@@ -96,6 +133,42 @@ export const cast_vote = async (
     },
     txResHandler
   );
+};
+
+export const yay = async (
+  currentAccount: InjectedAccountWithMeta,
+  collectionId: string,
+  proposalId: string,
+  nftId: string
+) => {
+  const injector = await web3FromSource(currentAccount.meta.source);
+  await api.tx.votingModule
+    .vote(proposalId, true, collectionId, nftId)
+    .signAndSend(
+      currentAccount?.address,
+      {
+        signer: injector.signer,
+      },
+      txResHandler
+    );
+};
+
+export const nay = async (
+  currentAccount: InjectedAccountWithMeta,
+  collectionId: string,
+  proposalId: string,
+  nftId: string
+) => {
+  const injector = await web3FromSource(currentAccount.meta.source);
+  await api.tx.votingModule
+    .vote(proposalId, false, collectionId, nftId)
+    .signAndSend(
+      currentAccount?.address,
+      {
+        signer: injector.signer,
+      },
+      txResHandler
+    );
 };
 
 export const execute_proposal = async (

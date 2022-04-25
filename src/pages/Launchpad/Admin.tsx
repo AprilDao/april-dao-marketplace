@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import CollectionItem from '../../components/CollectionItem';
-import { convertNumber } from '../../utils/helper';
 import { getAllCollections } from '../../utils/pallet-interact/chain_state';
 
-const Collections = () => {
+const Admin = () => {
   const [collections, setCollections] = useState<any[]>([]);
   useEffect(() => {
     const init = async () => {
       const allCollections = await getAllCollections();
       setCollections(
         allCollections.map(([_, value]) => {
+          console.log(value.toHuman());
           return value.toHuman();
         })
       );
@@ -21,16 +21,12 @@ const Collections = () => {
     <div>
       <div className="collection-list flex">
         {collections
-          .filter(
-            (item) =>
-              item.projectStatus === 'Approved' &&
-              new Date() > new Date(convertNumber(item.endDate) * 1000)
-          )
-          .map(({ id, name, numberOfItems, mintFee, startDate }, index) => {
+          .filter((item) => item.projectStatus === 'Draft')
+          .map(({ id, name, numberOfItems, mintFee }, index) => {
             return (
               <CollectionItem
                 key={index}
-                link={`/collections/${id}/proposals`}
+                link={`/admin/apply/${id}`}
                 title={name}
                 img="https://img-cdn.magiceden.dev/rs:fill:252:189:0:0/plain/https:/i.imgur.com/WCpkZUH.jpg"
                 mintInfo={{
@@ -45,4 +41,4 @@ const Collections = () => {
   );
 };
 
-export default Collections;
+export default Admin;

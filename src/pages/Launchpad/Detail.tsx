@@ -1,16 +1,14 @@
-import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Line } from 'rc-progress';
 
 import { Button } from '../../components/NormalButton';
 import { useConnectWallet } from '../../hooks/useConnectWallet';
 import ExtenalLink from '../../components/ExtenalLink';
-import { CountdownTimer } from '../../components/CountdownTimer';
-import { useCountdown } from '../../hooks/useCountDown';
-import { RootState } from '../../store/rootReducer';
 import { useEffect, useState } from 'react';
 import { getCollectionByHash } from '../../utils/pallet-interact/chain_state';
-import { Collection } from '../../models/Collection';
+import { mint } from '../../utils/pallet-interact/extrinsic_call';
+import { convertNumber } from '../../utils/helper';
+import MintTime from '../../components/MintTime';
 
 const Detail = () => {
   const [currentAccount, connectWallet] = useConnectWallet();
@@ -18,10 +16,6 @@ const Detail = () => {
   const navigate = useNavigate();
 
   const [upcoming, setUpcoming] = useState<any>();
-
-  // const [days, hours, minutes, seconds] = useCountdown(
-  //   upcomming?.mintInfor.time || '2022/12/31'
-  // );
 
   useEffect(() => {
     const init = async () => {
@@ -33,20 +27,22 @@ const Detail = () => {
     init();
   }, [collectionId]);
 
-  const mint = () => {
-    console.log('mint');
+  const mintNFT = () => {
+    if (currentAccount && collectionId) {
+      mint(currentAccount, collectionId);
+    }
   };
 
   const visit = () => {
-    navigate('/collections/3');
+    navigate(`/collections/${collectionId}`);
   };
 
   return (
     <div>
       <div className="flex">
-        <div>
-          <h1>{upcoming?.name}</h1>
-          {/* <div>{upcoming?.mintInfor.mintFee} ◎</div> */}
+        <div className="w-1/2">
+          <h1 className="text-white">{upcoming?.name}</h1>
+          <div>PRICE : {upcoming?.mintFee} ◎</div>
           <div className="flex gap-1 mt-3">
             <a href="#" className="flex">
               <ExtenalLink />
@@ -60,7 +56,7 @@ const Detail = () => {
           <p className="mt-6">{upcoming?.description}</p>
           <br />
         </div>
-        <div>
+        <div className="w-1/2">
           <img
             src="https://bafybeihycbe5abcf7nxugeb3kddghnlr7wke2vlow2l3jurw7b4dgudw6i.ipfs.nftstorage.link/"
             alt="Hidden Boyz"
@@ -70,27 +66,43 @@ const Detail = () => {
           <div>
             <div className="flex justify-between">
               <div>Total minted</div>
-              {/* <div>0% (400/{upcoming?.mintInfor.numberOfItems})</div> */}
+              {upcoming && upcoming.numberOfItems && upcoming.numberOfMinted && (
+                <div>
+                  {(convertNumber(upcoming.numberOfMinted) /
+                    convertNumber(upcoming.numberOfItems)) *
+                    100}
+                  % ({convertNumber(upcoming.numberOfMinted)}/
+                  {convertNumber(upcoming.numberOfItems)})
+                </div>
+              )}
             </div>
-            <Line
-              percent={(400 / 1555) * 100}
-              strokeWidth={4}
-              strokeColor="#e93a88"
-            />
-          </div>
-          {/* <div className="mt-2">
-            {days + hours + minutes + seconds > 0 && (
-              <CountdownTimer
-                days={days}
-                hours={hours}
-                minutes={minutes}
-                seconds={seconds}
+            {upcoming && (
+              <Line
+                percent={
+                  (convertNumber(upcoming.numberOfMinted) /
+                    convertNumber(upcoming.numberOfItems)) *
+                  100
+                }
+                strokeWidth={4}
+                strokeColor="#e93a88"
               />
             )}
-            {days + hours + minutes + seconds <= 0 && (
+          </div>
+          {upcoming && (
+            <MintTime
+              time={new Date(
+                convertNumber(upcoming.startDate) * 1000
+              ).toString()}
+            />
+          )}
+          {upcoming &&
+            convertNumber(upcoming.numberOfMinted) <
+              convertNumber(upcoming.numberOfItems) &&
+            new Date(convertNumber(upcoming.startDate) * 1000) <= new Date() &&
+            new Date(convertNumber(upcoming.endDate) * 1000) >= new Date() && (
               <>
                 {currentAccount && (
-                  <Button className="w-full" onClick={mint}>
+                  <Button className="w-full" onClick={mintNFT}>
                     Mint
                   </Button>
                 )}
@@ -99,6 +111,11 @@ const Detail = () => {
                     Connect wallet
                   </Button>
                 )}
+              </>
+            )}
+          {upcoming &&
+            new Date(convertNumber(upcoming.endDate) * 1000) < new Date() && (
+              <>
                 <div className="mt-2">
                   <Button className="w-full" onClick={visit}>
                     Visit collection
@@ -106,7 +123,6 @@ const Detail = () => {
                 </div>
               </>
             )}
-          </div> */}
         </div>
       </div>
     </div>
