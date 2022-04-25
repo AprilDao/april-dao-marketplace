@@ -9,7 +9,7 @@ import {
 
 const ProposalList = () => {
   const [currentAccount, connectWallet] = useConnectWallet();
-  const [proposals, setProposals] = useState<any[]>([1, 2, 3]);
+  const [proposals, setProposals] = useState<any[]>();
   const [currentCollection, setCurrentCollection] = useState<any>();
   const navigate = useNavigate();
   let { collectionId } = useParams();
@@ -17,12 +17,8 @@ const ProposalList = () => {
   useEffect(() => {
     const init = async () => {
       if (collectionId) {
-        // const all = await getProposalsByCollectionId(collectionId);
-        // setProposals(
-        //   all.map(([_, value]) => {
-        //     return value.toHuman();
-        //   })
-        // );
+        const value = await getProposalsByCollectionId(collectionId);
+        setProposals([value.toHuman()]);
 
         const collection = await getCollectionByHash(collectionId);
         setCurrentCollection(collection.toHuman());
@@ -46,29 +42,30 @@ const ProposalList = () => {
         <Button onClick={connectWallet}>Connect wallet</Button>
       )}
       <ul>
-        {proposals.map((item, index) => {
-          return (
-            <li key={index}>
-              <Link to={`/collections/${collectionId}/proposals/${item}`}>
-                <div className="flex justify-between">
-                  <span>{item.owner}</span>
-                  <span className="rounded-lg bg-green-400 text-white px-3 py-2">
-                    Active
-                  </span>
-                </div>
-                <h1 className="text-white text-xl">
-                  {`#${item.id} Kanpai Part 2: SushiMaker Treasury Payout Ratio
-                  [Implementation]`}
-                </h1>
-                <p className="text-yellow-200">
-                  This proposal’s expectation is to produce an implementation.
-                  Full details and discussions thus far can be found at:
-                  https://forum.sushi.com...
-                </p>
-              </Link>
-            </li>
-          );
-        })}
+        {collectionId &&
+          proposals &&
+          proposals.map((item, index) => {
+            return (
+              item && (
+                <li key={index}>
+                  <Link
+                    to={`/collections/${collectionId}/proposals/${item.assetId}`}
+                  >
+                    <div className="flex justify-between">
+                      <span>{item.owner}</span>
+                      <span className="rounded-lg bg-green-400 text-white px-3 py-2">
+                        Active
+                      </span>
+                    </div>
+                    <h1 className="text-white text-xl">
+                      {`#${item.assetId} Treasury Payout for Development`}
+                    </h1>
+                    <p className="text-yellow-200">{item.description}</p>
+                  </Link>
+                </li>
+              )
+            );
+          })}
       </ul>
     </div>
   );

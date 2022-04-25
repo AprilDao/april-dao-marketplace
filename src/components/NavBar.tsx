@@ -16,12 +16,12 @@ const NavBar = () => {
       title: 'Launchpad',
     },
     {
-      url: '/apply',
-      title: 'Apply for launchpad',
-    },
-    {
       url: 'admin/apply',
       title: 'Review collection',
+    },
+    {
+      url: '/apply',
+      title: 'Apply for launchpad',
     },
   ];
 

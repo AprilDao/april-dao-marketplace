@@ -4,27 +4,36 @@ import { toast } from 'react-toastify';
 import { api } from '../../utils/functions';
 import { Button } from '../../components/NormalButton';
 import { useConnectWallet } from '../../hooks/useConnectWallet';
-import { submit_proposal } from '../../utils/pallet-interact/extrinsic_call';
+import { createProposal } from '../../utils/pallet-interact/extrinsic_call';
+import { useParams } from 'react-router-dom';
+import { useState } from 'react';
+import { DatePicker } from 'antd';
 
 type Inputs = {
-  collection_name: string;
+  title: string;
   description: string;
-  numberOfItems: number;
-  mintFee: number;
+  withdrawAmount: number;
+  withdrawAddress: string;
+  expiredAt: string;
 };
 
 const ProposalCreate = () => {
   const [currentAccount, connectWallet] = useConnectWallet();
+  const { collectionId } = useParams();
+  const [expiredAt, setExpiredAt] = useState(new Date());
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<Inputs>();
+  const { register, handleSubmit } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    if (currentAccount) {
-      submit_proposal(currentAccount, 'collectionId');
+    if (currentAccount && collectionId) {
+      createProposal(
+        currentAccount,
+        collectionId,
+        data.title,
+        data.description,
+        data.withdrawAmount,
+        data.withdrawAddress,
+        Math.floor(expiredAt.getTime() / 1000)
+      );
     }
   };
 
@@ -41,8 +50,8 @@ const ProposalCreate = () => {
           <input
             className="appearance-none block w-full text-gray-900 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
             defaultValue=""
-            {...register('collection_name')}
-            id="collection_name"
+            {...register('title')}
+            id="title"
             type="text"
           />
         </div>
@@ -69,30 +78,37 @@ const ProposalCreate = () => {
           </label>
           <input
             defaultValue=""
-            {...register('numberOfItems')}
+            {...register('withdrawAmount')}
             className="appearance-none block w-full text-gray-900 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-            id="numberOfItems"
+            id="withdrawAmount"
             type="number"
           />
         </div>
         <div className="w-2/3 px-3">
           <label
             className="block uppercase tracking-wide text-gray-200 text-xs font-bold mb-2"
-            htmlFor="mintFee"
+            htmlFor="withdrawAddress"
           >
             Withdraw to address
           </label>
           <input
             defaultValue=""
-            {...register('mintFee')}
+            {...register('withdrawAddress')}
             className="appearance-none block w-full  text-gray-900 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-            id="mintFee"
+            id="withdrawAddress"
             type="text"
           />
+          <DatePicker
+            showTime={true}
+            onChange={(e: any, dateString: string) => {
+              setExpiredAt(new Date(dateString));
+            }}
+          />
         </div>
+        <br />
         <div className="w-2/3 px-3">
           {currentAccount && (
-            <Button onClick={handleSubmit(onSubmit)}>Create proposals</Button>
+            <Button onClick={handleSubmit(onSubmit)}>Create proposal</Button>
           )}
           {!currentAccount && (
             <Button onClick={connectWallet}>Connect wallet</Button>

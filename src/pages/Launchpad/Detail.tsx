@@ -41,7 +41,7 @@ const Detail = () => {
     <div>
       <div className="flex">
         <div className="w-1/2">
-          <h1>{upcoming?.name}</h1>
+          <h1 className="text-white">{upcoming?.name}</h1>
           <div>PRICE : {upcoming?.mintFee} ◎</div>
           <div className="flex gap-1 mt-3">
             <a href="#" className="flex">
@@ -68,10 +68,9 @@ const Detail = () => {
               <div>Total minted</div>
               {upcoming && upcoming.numberOfItems && upcoming.numberOfMinted && (
                 <div>
-                  {Math.floor(
-                    convertNumber(upcoming.numberOfMinted) /
-                      convertNumber(upcoming.numberOfItems)
-                  ) * 100}
+                  {(convertNumber(upcoming.numberOfMinted) /
+                    convertNumber(upcoming.numberOfItems)) *
+                    100}
                   % ({convertNumber(upcoming.numberOfMinted)}/
                   {convertNumber(upcoming.numberOfItems)})
                 </div>

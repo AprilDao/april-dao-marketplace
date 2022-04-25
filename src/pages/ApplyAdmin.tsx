@@ -5,6 +5,7 @@ import { Button } from '../components/NormalButton';
 import { useConnectWallet } from '../hooks/useConnectWallet';
 import {
   approve_collection,
+  bindAssetToNft,
   registerCollection,
 } from '../utils/pallet-interact/extrinsic_call';
 import { useParams } from 'react-router-dom';
@@ -34,6 +35,10 @@ const ApplyAdmin = () => {
         Math.floor(startDate.getTime() / 1000),
         Math.floor(endDate.getTime() / 1000)
       );
+
+      setTimeout(async () => {
+        await bindAssetToNft(currentAccount, collectionId);
+      }, 3000);
     }
   };
 

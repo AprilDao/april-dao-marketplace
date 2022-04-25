@@ -2,7 +2,10 @@ import { Button } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useConnectWallet } from '../../hooks/useConnectWallet';
-import { getCollectionByHash } from '../../utils/pallet-interact/chain_state';
+import {
+  getProposalsByCollectionId,
+  getVotesByCollectionId,
+} from '../../utils/pallet-interact/chain_state';
 import { nay, yay } from '../../utils/pallet-interact/extrinsic_call';
 
 const ProposalDetail: React.FC<{
@@ -12,21 +15,18 @@ const ProposalDetail: React.FC<{
   description: string;
 }> = ({ title, owner, description, status }) => {
   const [currentAccount, connectWallet] = useConnectWallet();
-  const [currentCollection, setCurrentCollection] = useState<any>();
+  const [votes, setVotes] = useState<any>();
+  const [proposal, setProposal] = useState<any>();
   let { collectionId, proposalId } = useParams();
 
   useEffect(() => {
     const init = async () => {
       if (collectionId) {
-        // const all = await getProposalsByCollectionId(collectionId);
-        // setProposals(
-        //   all.map(([_, value]) => {
-        //     return value.toHuman();
-        //   })
-        // );
+        const all = await getProposalsByCollectionId(collectionId);
+        setProposal(all.toHuman());
 
-        const collection = await getCollectionByHash(collectionId);
-        setCurrentCollection(collection.toHuman());
+        const collection = await getVotesByCollectionId(collectionId);
+        setVotes(collection.toHuman());
       }
     };
 
@@ -34,14 +34,18 @@ const ProposalDetail: React.FC<{
   }, [collectionId]);
 
   const onYay = async () => {
+    // TODO :
+    const nftId = '0';
     if (currentAccount && collectionId && proposalId) {
-      await yay(currentAccount, collectionId, proposalId);
+      await yay(currentAccount, collectionId, proposalId, nftId);
     }
   };
 
   const onNay = async () => {
+    // TODO :
+    const nftId = '0';
     if (currentAccount && collectionId && proposalId) {
-      await nay(currentAccount, collectionId, proposalId);
+      await nay(currentAccount, collectionId, proposalId, nftId);
     }
   };
 
@@ -69,20 +73,37 @@ const ProposalDetail: React.FC<{
           Back
         </Link>
         <br />
-        <h1 className="text-white text-xl">{title}</h1>
+        <h1 className="text-white text-xl">
+          {proposal && `#${proposal.assetId} Treasury Payout for Development`}
+        </h1>
         <span className="rounded-lg bg-green-400 text-white px-3 py-2">
-          {status}
+          Open
         </span>
-        <span>{owner}</span>
-        <p>{description}</p>
+        <div>{owner}</div>
+        <br />
+        <p>{proposal && proposal.description}</p>
       </div>
       <div className="w-1/3">
         <section className="border border-gray-400 rounded-md p-3">
           <h3 className="text-white font-bold text-lg">Voting results</h3>
-          <ul>
-            <li>Yay : 99 (99%)</li>
-            <li>Nay : 1 (1%)</li>
-          </ul>
+          {votes && (
+            <ul>
+              <li>
+                Yay : {votes.filter((item: any) => item.isAccepted).length} (
+                {(Number(votes.filter((item: any) => item.isAccepted).length) /
+                  votes.length) *
+                  100}
+                %)
+              </li>
+              <li>
+                Nay : {votes.filter((item: any) => !item.isAccepted).length} (
+                {(Number(votes.filter((item: any) => !item.isAccepted).length) /
+                  votes.length) *
+                  100}
+                %)
+              </li>
+            </ul>
+          )}
           {currentAccount && (
             <>
               <Button onClick={onYay} className="mr-2">

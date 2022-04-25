@@ -16,6 +16,11 @@ export const getNFTByCollectionId = async (collectionId: string) => {
 };
 
 export const getProposalsByCollectionId = async (collectionId: string) => {
-  const now = await api.query.collectionModule.proposals.entries(collectionId);
+  const now = await api.query.votingModule.proposals(collectionId);
+  return now;
+};
+
+export const getVotesByCollectionId = async (collectionId: string) => {
+  const now = await api.query.votingModule.votes(collectionId);
   return now;
 };

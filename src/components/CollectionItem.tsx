@@ -26,8 +26,8 @@ const CollectionItem: React.FC<CollectionItemProps> = ({
       <div>
         {mint.time && <MintTime time={mint.time} />}
         <div>
-          <div>{mint.numberOfItems}</div>
-          <div>{mint.mintFee}</div>
+          <div>TOTAL ITEMS : {mint.numberOfItems}</div>
+          <div>PRICE : {mint.mintFee}</div>
         </div>
       </div>
     );
