@@ -61,6 +61,8 @@ const ProposalDetail: React.FC<{
     }
   };
 
+  const withdraw = async () => {};
+
   return (
     <div className="flex">
       <div className="w-2/3">
@@ -123,6 +125,13 @@ const ProposalDetail: React.FC<{
                 Yay
               </Button>
               <Button onClick={onNay}>Nay</Button>
+            </>
+          )}
+          {currentAccount && (
+            <>
+              <Button onClick={withdraw} className="mr-2">
+                Withdraw
+              </Button>
             </>
           )}
           {!currentAccount && (
