@@ -21,11 +21,7 @@ const Collections = () => {
     <div>
       <div className="collection-list flex">
         {collections
-          .filter(
-            (item) =>
-              item.projectStatus === 'Approved' &&
-              new Date() > new Date(convertNumber(item.endDate) * 1000)
-          )
+          .filter((item) => item.projectStatus === 'Approved')
           .map(({ id, name, numberOfItems, mintFee, startDate }, index) => {
             return (
               <CollectionItem

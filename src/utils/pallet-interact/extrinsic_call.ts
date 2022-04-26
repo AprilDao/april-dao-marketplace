@@ -141,6 +141,7 @@ export const yay = async (
   proposalId: string,
   nftId: string
 ) => {
+  console.log(proposalId, false, collectionId, nftId);
   const injector = await web3FromSource(currentAccount.meta.source);
   await api.tx.votingModule
     .vote(proposalId, true, collectionId, nftId)
@@ -159,6 +160,7 @@ export const nay = async (
   proposalId: string,
   nftId: string
 ) => {
+  console.log(proposalId, false, collectionId, nftId);
   const injector = await web3FromSource(currentAccount.meta.source);
   await api.tx.votingModule
     .vote(proposalId, false, collectionId, nftId)

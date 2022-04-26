@@ -24,3 +24,14 @@ export const getVotesByCollectionId = async (collectionId: string) => {
   const now = await api.query.votingModule.votes(collectionId);
   return now;
 };
+
+export const getNftByAccount = async (
+  currentAccount: string,
+  collectionId: string
+) => {
+  const now = await api.query.collectionModule.collectionOwnerNFT(
+    collectionId,
+    currentAccount
+  );
+  return now;
+};

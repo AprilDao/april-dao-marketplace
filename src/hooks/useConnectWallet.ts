@@ -6,9 +6,12 @@ import { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 
 export const useConnectWallet = (): [
   InjectedAccountWithMeta | undefined,
-  () => Promise<void>
+  () => Promise<void>,
+  InjectedAccountWithMeta[] | undefined
 ] => {
-  const { currentAccount } = useSelector((state: RootState) => state.common);
+  const { currentAccount, allAccounts } = useSelector(
+    (state: RootState) => state.common
+  );
   const dispatch = useDispatch();
 
   const connectWallet = async () => {
@@ -17,5 +20,5 @@ export const useConnectWallet = (): [
     dispatch(setAllAccounts(allAccounts));
     dispatch(setCurrentAccount(allAccounts[0]));
   };
-  return [currentAccount, connectWallet];
+  return [currentAccount, connectWallet, allAccounts];
 };

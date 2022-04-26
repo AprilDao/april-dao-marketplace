@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useConnectWallet } from '../../hooks/useConnectWallet';
 import {
+  getNftByAccount,
   getProposalsByCollectionId,
   getVotesByCollectionId,
 } from '../../utils/pallet-interact/chain_state';
@@ -18,6 +19,7 @@ const ProposalDetail: React.FC<{
   const [votes, setVotes] = useState<any>();
   const [proposal, setProposal] = useState<any>();
   let { collectionId, proposalId } = useParams();
+  const [nftId, setNftId] = useState<string[]>([]);
 
   useEffect(() => {
     const init = async () => {
@@ -33,19 +35,29 @@ const ProposalDetail: React.FC<{
     init();
   }, [collectionId]);
 
+  useEffect(() => {
+    const init = async () => {
+      if (collectionId && currentAccount) {
+        const nfts = await getNftByAccount(
+          currentAccount?.address,
+          collectionId
+        );
+        setNftId(nfts.toHuman() as string[]);
+      }
+    };
+
+    init();
+  }, [collectionId, currentAccount]);
+
   const onYay = async () => {
-    // TODO :
-    const nftId = '0';
     if (currentAccount && collectionId && proposalId) {
-      await yay(currentAccount, collectionId, proposalId, nftId);
+      await yay(currentAccount, collectionId, proposalId, nftId[0]);
     }
   };
 
   const onNay = async () => {
-    // TODO :
-    const nftId = '0';
     if (currentAccount && collectionId && proposalId) {
-      await nay(currentAccount, collectionId, proposalId, nftId);
+      await nay(currentAccount, collectionId, proposalId, nftId[0]);
     }
   };
 
@@ -102,6 +114,7 @@ const ProposalDetail: React.FC<{
                   100}
                 %)
               </li>
+              <li>Total votes : {votes.length}</li>
             </ul>
           )}
           {currentAccount && (

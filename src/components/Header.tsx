@@ -1,9 +1,35 @@
-import { Link } from 'react-router-dom';
 import { useConnectWallet } from '../hooks/useConnectWallet';
 import { Button } from './NormalButton';
+import { Menu, Dropdown, Space } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
+import { setCurrentAccount } from '../store/commonSlice';
+import { useDispatch } from 'react-redux';
 
 const Header = () => {
-  const [currentAccount, connectWallet] = useConnectWallet();
+  const [currentAccount, connectWallet, allAccounts] = useConnectWallet();
+  const dispatch = useDispatch();
+
+  const onClick = ({ key }: { key: string }) => {
+    dispatch(
+      setCurrentAccount({
+        address: key,
+        type: 'sr25519',
+        meta: { genesisHash: '', name: '', source: 'polkadot-js' },
+      })
+    );
+  };
+
+  const menu = (
+    <Menu
+      onClick={onClick}
+      items={allAccounts?.map((item) => {
+        return {
+          label: `${item.meta.name} - ${item.address.substring(0, 10)}`,
+          key: item.address,
+        };
+      })}
+    />
+  );
 
   return (
     <header>
@@ -27,9 +53,14 @@ const Header = () => {
                 <div className="relative  inline-block text-white">
                   <div className="flex">
                     {currentAccount && (
-                      <Link to="/me">
-                        Hi, {currentAccount.address.substring(0, 10)}
-                      </Link>
+                      <Dropdown overlay={menu}>
+                        <a onClick={(e) => e.preventDefault()}>
+                          <Space>
+                            Hi, {currentAccount.address.substring(0, 10)}
+                            <DownOutlined />
+                          </Space>
+                        </a>
+                      </Dropdown>
                     )}
                     {!currentAccount && (
                       <Button onClick={connectWallet}>Connect wallet</Button>
