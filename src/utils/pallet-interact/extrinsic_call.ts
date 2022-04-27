@@ -87,10 +87,13 @@ export const createProposal = async (
   expiredAt: number
 ) => {
   const injector = await web3FromSource(currentAccount.meta.source);
+  const proposalId = collectionId;
+  const assetId = collectionId;
   await api.tx.votingModule
     .createProposal(
+      proposalId,
       collectionId,
-      collectionId,
+      assetId,
       withdrawAmount,
       withdrawAddress,
       title,

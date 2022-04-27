@@ -36,9 +36,9 @@ const ApplyAdmin = () => {
         Math.floor(endDate.getTime() / 1000)
       );
 
-      setTimeout(async () => {
-        await bindAssetToNft(currentAccount, collectionId);
-      }, 3000);
+      // setTimeout(async () => {
+      //   await bindAssetToNft(currentAccount, collectionId);
+      // }, 3000);
     }
   };
 
