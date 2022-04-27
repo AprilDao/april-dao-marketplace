@@ -93,6 +93,7 @@ export const createProposal = async (
       collectionId,
       withdrawAmount,
       withdrawAddress,
+      title,
       description,
       expiredAt
     )
