@@ -175,10 +175,10 @@ export const nay = async (
 
 export const execute_proposal = async (
   currentAccount: InjectedAccountWithMeta,
-  collectionId: string
+  proposalId: string
 ) => {
   const injector = await web3FromSource(currentAccount.meta.source);
-  await api.tx.collectionModule.execute_proposal(collectionId).signAndSend(
+  await api.tx.votingModule.execute(proposalId).signAndSend(
     currentAccount?.address,
     {
       signer: injector.signer,

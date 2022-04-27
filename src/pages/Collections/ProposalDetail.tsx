@@ -7,7 +7,11 @@ import {
   getProposalsByCollectionId,
   getVotesByCollectionId,
 } from '../../utils/pallet-interact/chain_state';
-import { nay, yay } from '../../utils/pallet-interact/extrinsic_call';
+import {
+  execute_proposal,
+  nay,
+  yay,
+} from '../../utils/pallet-interact/extrinsic_call';
 
 const ProposalDetail: React.FC<{
   title: string;
@@ -61,7 +65,11 @@ const ProposalDetail: React.FC<{
     }
   };
 
-  const withdraw = async () => {};
+  const withdraw = async () => {
+    if (currentAccount && collectionId && proposalId) {
+      await execute_proposal(currentAccount, proposalId);
+    }
+  };
 
   return (
     <div className="flex">
@@ -122,9 +130,9 @@ const ProposalDetail: React.FC<{
           {currentAccount && (
             <>
               <Button onClick={onYay} className="mr-2">
-                Yay
+                Yes
               </Button>
-              <Button onClick={onNay}>Nay</Button>
+              <Button onClick={onNay}>No</Button>
             </>
           )}
           {currentAccount && (
